@@ -72,6 +72,7 @@ if (maek.OS === "windows") {
 		`-L${NEST_LIBS}/zlib/lib`, `-lz`
 	);
 }
+
 //use COPY to copy a file
 // 'COPY(from, to)'
 // from: file to copy from
