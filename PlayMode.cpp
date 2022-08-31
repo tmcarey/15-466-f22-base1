@@ -2,6 +2,7 @@
 
 //for the GL_ERRORS() macro:
 #include "gl_errors.hpp"
+#include "load_save_png.hpp"
 
 //for glm::value_ptr() :
 #include <glm/gtc/type_ptr.hpp>
@@ -48,27 +49,51 @@ PlayMode::PlayMode() {
 		}
 	}
 
+	glm::uvec2 size;
+	std::vector<glm::u8vec4> data;
+	std::array<uint8_t, 8> bit0 = { };
+	std::array<uint8_t, 8> bit1 = { };
+	glm::u8vec4 red(255, 0, 0, 255);
+	glm::u8vec4 green(0, 255, 0, 255);
+	glm::u8vec4 blue(0, 0, 255, 255);
+	glm::u8vec4 white(255, 255, 255, 255);
+
+	load_png("test.png", &size, &data, LowerLeftOrigin);
+	for (uint8_t y = 0; y < 8; y++){
+		uint8_t val0 = 0;
+		uint8_t val1 = 0;
+		for (uint8_t x = 0; x < 8; x++){
+			if(data[x + (y * 8)] == red){
+			}else
+			if(data[x + (y * 8)] == green){
+				val0 |= 1 << x;
+			}else
+			if(data[x + (y * 8)] == blue){
+				val1 |= 1 << x;
+			}else
+			if(data[x + (y * 8)] == white){
+				val0 |= 1 << x;
+				val1 |= 1 << x;
+			}
+		}
+		bit0[y] = val0;
+		bit1[y] = val1;
+	}
+
 	//use sprite 32 as a "player":
-	ppu.tile_table[32].bit0 = {
-		0b01111110,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b01111110,
-	};
-	ppu.tile_table[32].bit1 = {
-		0b00000000,
-		0b00000000,
-		0b00100100,
-		0b00011000,
-		0b00000000,
-		0b00100100,
-		0b00000000,
-		0b00000000,
-	};
+	ppu.tile_table[32].bit0 = bit0;
+
+	/* { */
+	/* 	0b01111110, */
+	/* 	0b11111111, */
+	/* 	0b11111111, */
+	/* 	0b11111111, */
+	/* 	0b11111111, */
+	/* 	0b11111111, */
+	/* 	0b11111111, */
+	/* 	0b01111110, */
+	/* }; */
+	ppu.tile_table[32].bit1 = bit1;
 
 	//makes the outside of tiles 0-16 solid:
 	ppu.palette_table[0] = {
