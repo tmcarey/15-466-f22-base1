@@ -55,6 +55,7 @@ int AssetManager::loadTile(std::string path){
 
 	ppu.tile_table[tileCount].bit0 = bit0;
 	ppu.tile_table[tileCount].bit1 = bit1;
+	printf("%d\n", ppu.tile_table[0].bit0[0]);
 	return tileCount++;
 }
 

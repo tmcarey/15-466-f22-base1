@@ -165,12 +165,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	//tilemap gets recomputed every frame as some weird plasma thing:
 	//NOTE: don't do this in your game! actually make a map or something :-)
-	for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) {
-		for (uint32_t x = 0; x < PPU466::BackgroundWidth; ++x) {
-			//TODO: make weird plasma thing
-			ppu.background[x+PPU466::BackgroundWidth*y] = ((x+y)%16);
-		}
-	}
+	/* for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) { */
+	/* 	for (uint32_t x = 0; x < PPU466::BackgroundWidth; ++x) { */
+	/* 		//TODO: make weird plasma thing */
+	/* 		ppu.background[x+PPU466::BackgroundWidth*y] = ((x+y)%16); */
+	/* 	} */
+	/* } */
 
 	//background scroll:
 	ppu.background_position.x = int32_t(-0.5f * player_at.x);
@@ -181,6 +181,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	ppu.sprites[0].y = int8_t(player_at.y);
 	ppu.sprites[0].index = 0;
 	ppu.sprites[0].attributes = 0;
+	printf("%d\n", ppu.tile_table[ppu.sprites[0].index].bit0[0]);
 
 	//some other misc sprites:
 	/* for (uint32_t i = 1; i < 63; ++i) { */
