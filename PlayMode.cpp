@@ -11,10 +11,13 @@
 
 #include "Paddle.hpp"
 
+#include "Ball.hpp"
+
 PlayMode::PlayMode() {
 	assetManager = new AssetManager(&ppu);
 	uint8_t paddle1Tile = assetManager->loadTile("paddle1.png");
 	uint8_t paddle2Tile = assetManager->loadTile("paddle2.png");
+	uint8_t ballTile = assetManager->loadTile("ball.png");
 	tickers = std::vector<ITickable*>();
 	entities = std::vector<Entity*>();
 
@@ -41,6 +44,14 @@ PlayMode::PlayMode() {
 			this,
 			paddle2Tile,
 			paddle2Tile));
+
+	entities.push_back(new Ball(
+				ballTile,
+				3,
+				30.0f,
+				this,
+				&(ppu.sprites[2])
+				));
 }
 
 void PlayMode::RegisterTickable(ITickable *tickable){
