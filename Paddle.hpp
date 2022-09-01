@@ -11,6 +11,8 @@ struct Paddle : ITickable, Entity {
 		   uint8_t column,
 		   uint8_t margin,
 		   float speed,
+		   uint8_t pallette,
+		   PPU466::Sprite *sprite,
 		   PlayMode *playMode,
 		   uint8_t noSwingTile, 
 		   uint8_t swingTile);

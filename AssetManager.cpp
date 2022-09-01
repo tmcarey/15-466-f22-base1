@@ -6,6 +6,12 @@
 
 AssetManager::AssetManager(PPU466 *_ppu){
 	ppu = _ppu;
+
+	uint8_t backgroundTile = loadTile("black.png");
+
+	for(int i = 0; i < PPU466::BackgroundWidth * PPU466::BackgroundHeight; i++){
+		ppu->background[i] = backgroundTile;
+	}
 }
 
 int findColor(std::array<glm::u8vec4, 4> colorArr, glm::u8vec4 color){
@@ -32,6 +38,7 @@ uint8_t AssetManager::loadTile(std::string path){
 		printf("Wrong size of image %s", path.c_str());
 		throw std::invalid_argument("Failed to load image");
 	}
+
 	for (uint8_t y = 0; y < 8; y++){
 		uint8_t val0 = 0;
 		uint8_t val1 = 0;
@@ -46,17 +53,22 @@ uint8_t AssetManager::loadTile(std::string path){
 				colors[colorCount] = color;
 				colorIdx = colorCount++;
 			}
-			val0 |= (colorIdx % 2) << y;
-			val1 |= ((colorIdx >> 1) % 2) << y;
+			val0 |= (colorIdx % 2) << x;
+			val1 |= ((colorIdx >> 1) % 2) << x;
 		}
 		ppu->tile_table[tileCount].bit0[y] = val0;
 		ppu->tile_table[tileCount].bit1[y] = val1;
-		printf("running\n");
 	}
 	for(int i = 0; i < 2; i++){
 		ppu->palette_table[palletteCount][i] = colors[i];
 	}
-	printf("%p\n", &(ppu));
+	palletteCount++;
 	return tileCount++;
+}
+
+void AssetManager::clearRemainingSprites(){
+	for(uint8_t i = spriteCount; i < 64; i++){
+		ppu->sprites[i].y = 250;
+	}
 }
 

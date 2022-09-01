@@ -13,7 +13,8 @@
 
 PlayMode::PlayMode() {
 	assetManager = new AssetManager(&ppu);
-	uint8_t paddleTile = assetManager->loadTile("test.png");
+	uint8_t paddle1Tile = assetManager->loadTile("paddle1.png");
+	uint8_t paddle2Tile = assetManager->loadTile("paddle2.png");
 	tickers = std::vector<ITickable*>();
 	entities = std::vector<Entity*>();
 
@@ -22,11 +23,24 @@ PlayMode::PlayMode() {
 			&down1.pressed,
 			20,
 			20,
-			30.0f,
+			90.0f,
+			1,
+			&(ppu.sprites[0]),
 			this,
-			paddleTile,
-			paddleTile));
+			paddle1Tile,
+			paddle1Tile));
 
+	entities.push_back(new Paddle(
+			&up2.pressed,
+			&down2.pressed,
+			ppu.ScreenWidth - 8 - 20,
+			20,
+			90.0f,
+			2,
+			&(ppu.sprites[1]),
+			this,
+			paddle2Tile,
+			paddle2Tile));
 }
 
 void PlayMode::RegisterTickable(ITickable *tickable){
@@ -38,6 +52,7 @@ PlayMode::~PlayMode() {
 		delete *it;
 	}
 	entities.clear();
+	delete assetManager;
 }
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
@@ -80,6 +95,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 }
 
 void PlayMode::update(float elapsed) {
+	auto color = ppu.palette_table[1][0];
 
 	//slowly rotates through [0,1):
 	// (will be used to set background color)
@@ -93,9 +109,7 @@ void PlayMode::update(float elapsed) {
 	/* if (down2.pressed) player_at.y += PlayerSpeed * elapsed; */
 
 	for(auto it = tickers.begin(); it < tickers.end(); it++){
-		printf("ticking\n");
 		((Paddle*)*it)->Tick(elapsed);
-		printf("ticking over\n");
 	}
 
 	//reset button press counters:
@@ -130,10 +144,10 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	ppu.background_position.y = int32_t(-0.5f * player_at.y);
 
 	//player sprite:
-	ppu.sprites[0].x = int8_t(player_at.x);
-	ppu.sprites[0].y = int8_t(player_at.y);
-	ppu.sprites[0].index = 0;
-	ppu.sprites[0].attributes = 0;
+	/* ppu.sprites[0].x = int8_t(player_at.x); */
+	/* ppu.sprites[0].y = int8_t(player_at.y); */
+	/* ppu.sprites[0].index = 0; */
+	/* ppu.sprites[0].attributes = 0; */
 
 	//some other misc sprites:
 	/* for (uint32_t i = 1; i < 63; ++i) { */

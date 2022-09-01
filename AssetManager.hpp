@@ -7,6 +7,7 @@
 struct AssetManager {
 	AssetManager(PPU466 *ppu);
 	uint8_t loadTile(std::string path);
+	void clearRemainingSprites();
 	PPU466::Sprite *getNextSprite();
 
 	private:
