@@ -4,8 +4,8 @@
 
 #include <stdexcept>
 
-AssetManager::AssetManager(PPU466 ppu){
-	this->ppu = ppu;
+AssetManager::AssetManager(PPU466 *_ppu){
+	ppu = _ppu;
 }
 
 int findColor(std::array<glm::u8vec4, 4> colorArr, glm::u8vec4 color){
@@ -17,12 +17,14 @@ int findColor(std::array<glm::u8vec4, 4> colorArr, glm::u8vec4 color){
 	return -1;
 }
 
-int AssetManager::loadTile(std::string path){
+PPU466::Sprite *AssetManager::getNextSprite(){
+	return &(ppu->sprites[spriteCount++]);
+}
+
+uint8_t AssetManager::loadTile(std::string path){
 	glm::uvec2 size;
 	std::vector<glm::u8vec4> data;
-	std::array<uint8_t, 8> bit0 = { };
-	std::array<uint8_t, 8> bit1 = { };
-	int colorCount = 0;
+	uint8_t colorCount = 0;
 	std::array<glm::u8vec4, 4> colors = { };
 
 	load_png(path, &size, &data, LowerLeftOrigin);
@@ -47,15 +49,14 @@ int AssetManager::loadTile(std::string path){
 			val0 |= (colorIdx % 2) << y;
 			val1 |= ((colorIdx >> 1) % 2) << y;
 		}
-		bit0[y] = val0;
-		bit1[y] = val1;
+		ppu->tile_table[tileCount].bit0[y] = val0;
+		ppu->tile_table[tileCount].bit1[y] = val1;
+		printf("running\n");
 	}
-	ppu.palette_table[palletteCount] = colors;
-	printf("%d, %d, %d\n", colors[0].x, colors[0].y, colors[0].z);
-
-	ppu.tile_table[tileCount].bit0 = bit0;
-	ppu.tile_table[tileCount].bit1 = bit1;
-	printf("%d\n", ppu.tile_table[0].bit0[0]);
+	for(int i = 0; i < 2; i++){
+		ppu->palette_table[palletteCount][i] = colors[i];
+	}
+	printf("%p\n", &(ppu));
 	return tileCount++;
 }
 
