@@ -1,12 +1,19 @@
 #include "Util.hpp"
+#include <time.h>
 
 #define PI 3.14159265f
 
+void Util::InitRandom(){
+	srand((unsigned int)time(NULL));
+}
+
 float Util::SampleUnit() {
-	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float val = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	return val;
 }
 
 glm::vec2 Util::SampleUnitCircle(){
-	return glm::vec2(std::cos(SampleUnit() * PI * 2), 
-			std::sin(SampleUnit() * PI * 2));
+	float t = SampleUnit() * PI * 2;
+	return glm::vec2(std::cos(t), 
+			std::sin(t));
 }

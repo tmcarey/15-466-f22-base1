@@ -21,6 +21,20 @@ Ball::Ball(
 
 void Ball::Tick(float elapsed){
 	position += velocity * elapsed;
+
+	if(position.x <= 0){
+		position.x = 0;
+		velocity = -velocity;
+	}else if(position.y <= 0){
+		position.y = 0;
+		velocity = -velocity;
+	}else if(position.x >= PPU466::ScreenWidth - 8){
+		position.x = PPU466::ScreenWidth - 8;
+		velocity = -velocity;
+	}else if(position.y >= PPU466::ScreenHeight - 8){
+		position.y = PPU466::ScreenHeight - 8;
+		velocity = -velocity;
+	}
 	
 
 	sprite->x = uint8_t(position.x);

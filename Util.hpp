@@ -5,4 +5,5 @@
 struct Util {
 	static glm::vec2 SampleUnitCircle();
 	static float SampleUnit();
+	static void InitRandom();
 };

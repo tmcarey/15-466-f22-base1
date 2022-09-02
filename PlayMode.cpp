@@ -13,13 +13,17 @@
 
 #include "Ball.hpp"
 
+#include "Util.hpp"
+
 PlayMode::PlayMode() {
+	Util::InitRandom();
 	assetManager = new AssetManager(&ppu);
 	uint8_t paddle1Tile = assetManager->loadTile("paddle1.png");
 	uint8_t paddle2Tile = assetManager->loadTile("paddle2.png");
 	uint8_t ballTile = assetManager->loadTile("ball.png");
 	tickers = std::vector<ITickable*>();
 	entities = std::vector<Entity*>();
+
 
 	entities.push_back(new Paddle(
 			&up1.pressed,
@@ -48,7 +52,7 @@ PlayMode::PlayMode() {
 	entities.push_back(new Ball(
 				ballTile,
 				3,
-				30.0f,
+				90.0f,
 				this,
 				&(ppu.sprites[2])
 				));
