@@ -24,16 +24,16 @@ void Ball::Tick(float elapsed){
 
 	if(position.x <= 0){
 		position.x = 0;
-		velocity = -velocity;
+		velocity = glm::reflect(velocity, glm::vec2(1.0, 0.0f));
 	}else if(position.y <= 0){
 		position.y = 0;
-		velocity = -velocity;
+		velocity = glm::reflect(velocity, glm::vec2(0.0, 1.0f));
 	}else if(position.x >= PPU466::ScreenWidth - 8){
 		position.x = PPU466::ScreenWidth - 8;
-		velocity = -velocity;
+		velocity = glm::reflect(velocity, glm::vec2(-1.0, 0.0f));
 	}else if(position.y >= PPU466::ScreenHeight - 8){
 		position.y = PPU466::ScreenHeight - 8;
-		velocity = -velocity;
+		velocity = glm::reflect(velocity, glm::vec2(0.0, -1.0f));
 	}
 	
 

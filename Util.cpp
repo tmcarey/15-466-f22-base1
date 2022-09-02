@@ -4,7 +4,7 @@
 #define PI 3.14159265f
 
 void Util::InitRandom(){
-	srand((unsigned int)time(NULL));
+	srand((unsigned int)(time(NULL)) * 10000);
 }
 
 float Util::SampleUnit() {
