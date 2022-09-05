@@ -11,6 +11,7 @@
 #include "AssetManager.hpp"
 
 #include "ITickable.hpp"
+#include "ICollidable.hpp"
 
 #include "Entity.hpp"
 
@@ -26,6 +27,7 @@ struct PlayMode : Mode {
 	AssetManager *assetManager;
 
 	void RegisterTickable(ITickable *tickable);
+	void RegisterCollidable(ICollidable *collidable);
 
 	//----- game state -----
 

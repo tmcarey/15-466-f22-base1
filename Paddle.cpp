@@ -31,6 +31,10 @@ Paddle::Paddle(bool *isup,
 	sprite->y = margin;
 }
 
+void Paddle::DoCollision(Ball ball){
+
+}
+
 void Paddle::Tick(float elapsed){
 	if(*isdown){
 		position.y = std::max(position.y - (speed * elapsed), (float)margin);

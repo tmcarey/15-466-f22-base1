@@ -1,8 +1,12 @@
+#pragma once
+
 #include "PPU466.hpp"
 
 #include "ITickable.hpp"
 
 #include "PlayMode.hpp"
+
+#include "Rect.hpp"
 
 struct Ball : ITickable, Entity {
 	Ball(uint8_t tile,
@@ -14,6 +18,7 @@ struct Ball : ITickable, Entity {
 
 
 	virtual void Tick(float elapsed) override;
+	Rect rect;
 
 	private:
 		glm::vec2 position;

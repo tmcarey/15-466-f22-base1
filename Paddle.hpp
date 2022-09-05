@@ -4,8 +4,9 @@
 
 #include "PPU466.hpp"
 #include <cstdint>
+#include "ICollidable.hpp"
 
-struct Paddle : ITickable, Entity {
+struct Paddle : ITickable, ICollidable, Entity {
 	Paddle(bool *isup, 
 		   bool *isdown, 
 		   uint8_t column,
@@ -18,6 +19,7 @@ struct Paddle : ITickable, Entity {
 		   uint8_t swingTile);
 
 	virtual void Tick(float elapsed) override;
+	virtual void DoCollision(Ball ball) override;
 
 	private:
 		bool *isup;
