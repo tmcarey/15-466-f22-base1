@@ -11,19 +11,16 @@ Paddle::Paddle(bool *isup,
 		   float speed,
 		   uint8_t pallette,
 		   PPU466::Sprite *sprite,
-		   PlayMode *playMode,
 		   uint8_t noSwingTile, 
 		   uint8_t swingTile) {
 	this->isup = isup;
 	this->isdown = isdown;
-	this->playMode = playMode;
 	this->sprite = sprite;
 	this->noSwingTile = noSwingTile;
 	this->swingTile = swingTile;
 	this->column = column;
 	this->margin = margin;
 	this->speed = speed;
-	playMode->RegisterTickable(this);
 	sprite->attributes = pallette;
 	sprite->index = noSwingTile;
 	position = glm::vec2((float)column, (float)margin);
@@ -31,15 +28,23 @@ Paddle::Paddle(bool *isup,
 	sprite->y = margin;
 }
 
-void Paddle::DoCollision(Ball ball){
+Rect Paddle::GetRect(){
+	return Rect(position, position + glm::vec2(8,8));
+}
 
+void Paddle::OnCollisionEnter(Collision coll){
+	printf("Entering\n");
+}
+
+void Paddle::OnCollisionExit(Collision coll){
+	printf("Exiting\n");
 }
 
 void Paddle::Tick(float elapsed){
 	if(*isdown){
 		position.y = std::max(position.y - (speed * elapsed), (float)margin);
 	}else if(*isup){
-		position.y = std::min(position.y + (speed * elapsed), playMode->ppu.ScreenHeight - 8 - (float)margin);
+		position.y = std::min(position.y + (speed * elapsed), PPU466::ScreenHeight - 8 - (float)margin);
 	}
 
 	sprite->x = uint8_t(position.x);

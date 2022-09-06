@@ -14,17 +14,17 @@ struct Paddle : ITickable, ICollidable, Entity {
 		   float speed,
 		   uint8_t pallette,
 		   PPU466::Sprite *sprite,
-		   PlayMode *playMode,
 		   uint8_t noSwingTile, 
 		   uint8_t swingTile);
 
 	virtual void Tick(float elapsed) override;
-	virtual void DoCollision(Ball ball) override;
+	virtual void OnCollisionEnter(Collision coll) override;
+	virtual void OnCollisionExit(Collision coll) override;
+	virtual Rect GetRect() override;
 
 	private:
 		bool *isup;
 		bool *isdown;
-		PlayMode *playMode;
 		uint8_t column;
 		uint8_t margin;
 		float speed;

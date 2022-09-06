@@ -23,9 +23,9 @@ PlayMode::PlayMode() {
 	uint8_t ballTile = assetManager->loadTile("ball.png");
 	tickers = std::vector<ITickable*>();
 	entities = std::vector<Entity*>();
+	colliders = std::vector<ICollidable*>();
 
-
-	entities.push_back(new Paddle(
+	Paddle *paddle1 = new Paddle(
 			&up1.pressed,
 			&down1.pressed,
 			20,
@@ -33,11 +33,13 @@ PlayMode::PlayMode() {
 			90.0f,
 			1,
 			&(ppu.sprites[0]),
-			this,
 			paddle1Tile,
-			paddle1Tile));
+			paddle1Tile);
+	tickers.push_back(paddle1);
+	entities.push_back(paddle1);
+	colliders.push_back(paddle1);
 
-	entities.push_back(new Paddle(
+	Paddle *paddle2 =new Paddle(
 			&up2.pressed,
 			&down2.pressed,
 			ppu.ScreenWidth - 8 - 20,
@@ -45,21 +47,20 @@ PlayMode::PlayMode() {
 			90.0f,
 			2,
 			&(ppu.sprites[1]),
-			this,
 			paddle2Tile,
-			paddle2Tile));
+			paddle2Tile);
+	tickers.push_back(paddle2);
+	entities.push_back(paddle2);
+	colliders.push_back(paddle2);
 
-	entities.push_back(new Ball(
+	ball = new Ball(
 				ballTile,
 				3,
 				90.0f,
-				this,
 				&(ppu.sprites[2])
-				));
-}
-
-void PlayMode::RegisterTickable(ITickable *tickable){
-	tickers.push_back(tickable);
+				);
+	entities.push_back(ball);
+	tickers.push_back(ball);
 }
 
 PlayMode::~PlayMode() {
@@ -124,9 +125,12 @@ void PlayMode::update(float elapsed) {
 	/* if (down2.pressed) player_at.y += PlayerSpeed * elapsed; */
 
 	for(auto it = tickers.begin(); it < tickers.end(); it++){
-		((Paddle*)*it)->Tick(elapsed);
+		((ITickable*)*it)->Tick(elapsed);
 	}
 
+	for(auto it = colliders.begin(); it < colliders.end(); it++){
+		((ITickable*)*it)->Tick(elapsed);
+	}
 	//reset button press counters:
 	up1.downs = 0;
 	up2.downs = 0;

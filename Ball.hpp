@@ -4,15 +4,14 @@
 
 #include "ITickable.hpp"
 
-#include "PlayMode.hpp"
-
 #include "Rect.hpp"
+
+#include "Entity.hpp"
 
 struct Ball : ITickable, Entity {
 	Ball(uint8_t tile,
 		uint8_t pallette,
 		float speed,
-		PlayMode *playMode,
 		PPU466::Sprite *sprite
 		);
 

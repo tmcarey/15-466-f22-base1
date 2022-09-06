@@ -26,9 +26,6 @@ struct PlayMode : Mode {
 
 	AssetManager *assetManager;
 
-	void RegisterTickable(ITickable *tickable);
-	void RegisterCollidable(ICollidable *collidable);
-
 	//----- game state -----
 
 	//input tracking:
@@ -49,4 +46,6 @@ struct PlayMode : Mode {
 
 	std::vector<ITickable*> tickers;
 	std::vector<Entity*> entities;
+	std::vector<ICollidable*> colliders;
+	Ball *ball;
 };

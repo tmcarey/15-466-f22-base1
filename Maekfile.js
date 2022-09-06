@@ -113,7 +113,9 @@ const game_objs = [
 	maek.CPP('AssetManager.cpp'),
 	maek.CPP('Paddle.cpp'),
 	maek.CPP('Ball.cpp'),
-	maek.CPP('Util.cpp')
+	maek.CPP('Util.cpp'),
+	maek.CPP('ICollidable.cpp'),
+	maek.CPP('Collision.cpp')
 ];
 
 //the '[exeFile =] LINK(objFiles, exeFileBase, [, options])' links an array of objects into an executable:

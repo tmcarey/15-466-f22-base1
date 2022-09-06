@@ -1,7 +1,11 @@
+#pragma once
+
 #include "glm/glm.hpp"
 
 #include "Ball.hpp"
 
 struct Collision {
-	static bool RectRectCollide(Rect a, Rect b, glm::vec2 *resolver);
+	Collision(Ball *ball) : ball(ball) {};
+	Ball *ball;
+	static bool RectRectCollide(Rect a, Rect b);
 };
