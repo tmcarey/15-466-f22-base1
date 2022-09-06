@@ -17,11 +17,11 @@ struct Ball : ITickable, Entity {
 
 
 	virtual void Tick(float elapsed) override;
-	Rect rect;
+	Rect GetRect();
+	glm::vec2 position;
+	glm::vec2 velocity;
 
 	private:
-		glm::vec2 position;
-		glm::vec2 velocity;
 		float speed;
 		PPU466::Sprite *sprite;
 };

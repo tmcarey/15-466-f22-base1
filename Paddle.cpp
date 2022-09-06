@@ -33,6 +33,32 @@ Rect Paddle::GetRect(){
 }
 
 void Paddle::OnCollisionEnter(Collision coll){
+	Rect ourRect = GetRect();
+	Rect otherRect = coll.ball->GetRect();
+	float minGap = 1000;
+	glm::vec2 resolver(0);
+	float right = ourRect.topRight.x - otherRect.bottomLeft.x;
+	if(right < minGap){
+		resolver = glm::vec2(right, 0);
+		minGap = right;
+	}
+	float left = otherRect.topRight.x - ourRect.bottomLeft.x;
+	if(left < minGap){
+		resolver = glm::vec2(-left, 0);
+		minGap = left;
+	}
+	float up = ourRect.topRight.y - otherRect.bottomLeft.y;
+	if(up < minGap){
+		resolver = glm::vec2(0, up);
+		minGap = up;
+	}
+	float down = otherRect.topRight.y - ourRect.bottomLeft.y;
+	if(down < minGap){
+		resolver = glm::vec2(0, -down);
+		minGap = down;
+	}
+	coll.ball->position += resolver;
+	coll.ball->velocity = glm::reflect(coll.ball->velocity, glm::normalize(resolver));
 	printf("Entering\n");
 }
 

@@ -59,10 +59,6 @@ uint8_t AssetManager::loadTile(std::string path){
 		ppu->tile_table[tileCount].bit0[y] = val0;
 		ppu->tile_table[tileCount].bit1[y] = val1;
 	}
-	for(int i = 0; i < 2; i++){
-		ppu->palette_table[palletteCount][i] = colors[i];
-	}
-	palletteCount++;
 	return tileCount++;
 }
 
@@ -72,3 +68,9 @@ void AssetManager::clearRemainingSprites(){
 	}
 }
 
+uint8_t AssetManager::addPallette(std::array<glm::vec4, 4> colors){
+	for(int i = 0; i < 4; i++){
+		ppu->palette_table[palletteCount][i] = colors[i];
+	}
+	return palletteCount++;
+}

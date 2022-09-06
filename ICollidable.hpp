@@ -12,5 +12,5 @@ struct ICollidable {
 	void CheckCollision(Ball *coll);
 
 	private:
-		bool isColliding;
+		bool isColliding = false;
 };

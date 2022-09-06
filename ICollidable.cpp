@@ -1,7 +1,7 @@
 #include "ICollidable.hpp"
 
 void ICollidable::CheckCollision(Ball *ball){
-	bool currentlyColliding = Collision::RectRectCollide(ball->rect, GetRect());
+	bool currentlyColliding = Collision::RectRectCollide(ball->GetRect(), GetRect());
 
 	if(currentlyColliding && !isColliding){
 		OnCollisionEnter(Collision(ball));

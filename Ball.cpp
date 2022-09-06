@@ -10,11 +10,14 @@ Ball::Ball(
 					  speed(speed), 
 					  position(PPU466::ScreenHeight / 2, PPU466::ScreenWidth / 2),
 					  velocity(Util::SampleUnitCircle() * speed) {
-	rect = Rect(position, position + glm::vec2(8, 8));
 	sprite->index = tile;
 	sprite->attributes = pallette;
 	sprite->x = uint8_t(position.x);
 	sprite->y = uint8_t(position.y);
+}
+
+Rect Ball::GetRect() {
+	return Rect(position, position + glm::vec2(8, 8));
 }
 
 void Ball::Tick(float elapsed){

@@ -115,6 +115,7 @@ const game_objs = [
 	maek.CPP('Ball.cpp'),
 	maek.CPP('Util.cpp'),
 	maek.CPP('ICollidable.cpp'),
+	maek.CPP('Enemy.cpp'),
 	maek.CPP('Collision.cpp')
 ];
 

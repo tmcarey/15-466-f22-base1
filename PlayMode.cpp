@@ -15,10 +15,13 @@
 
 #include "Util.hpp"
 
+#include "Enemy.hpp"
+
 PlayMode::PlayMode() {
 	Util::InitRandom();
 	assetManager = new AssetManager(&ppu);
 	uint8_t paddle1Tile = assetManager->loadTile("paddle1.png");
+	uint8_t enemyTile = assetManager->loadTile("paddle1.png");
 	uint8_t paddle2Tile = assetManager->loadTile("paddle2.png");
 	uint8_t ballTile = assetManager->loadTile("ball.png");
 	tickers = std::vector<ITickable*>();
@@ -26,41 +29,56 @@ PlayMode::PlayMode() {
 	colliders = std::vector<ICollidable*>();
 
 	Paddle *paddle1 = new Paddle(
-			&up1.pressed,
-			&down1.pressed,
-			20,
-			20,
-			90.0f,
-			1,
-			&(ppu.sprites[0]),
-			paddle1Tile,
-			paddle1Tile);
+		&up1.pressed,
+		&down1.pressed,
+		20,
+		20,
+		90.0f,
+		1,
+		&(ppu.sprites[0]),
+		paddle1Tile,
+		paddle1Tile);
 	tickers.push_back(paddle1);
 	entities.push_back(paddle1);
 	colliders.push_back(paddle1);
 
 	Paddle *paddle2 =new Paddle(
-			&up2.pressed,
-			&down2.pressed,
-			ppu.ScreenWidth - 8 - 20,
-			20,
-			90.0f,
-			2,
-			&(ppu.sprites[1]),
-			paddle2Tile,
-			paddle2Tile);
+		&up2.pressed,
+		&down2.pressed,
+		ppu.ScreenWidth - 8 - 20,
+		20,
+		90.0f,
+		2,
+		&(ppu.sprites[1]),
+		paddle2Tile,
+		paddle2Tile);
 	tickers.push_back(paddle2);
 	entities.push_back(paddle2);
 	colliders.push_back(paddle2);
 
 	ball = new Ball(
-				ballTile,
-				3,
-				90.0f,
-				&(ppu.sprites[2])
-				);
+		ballTile,
+		3,
+		90.0f,
+		&(ppu.sprites[2])
+		);
 	entities.push_back(ball);
 	tickers.push_back(ball);
+	Rect rect = paddle1->GetRect();
+	Rect rect2 = ball->GetRect();
+	printf("(%f, %f), (%f, %f), %f, %f\n", rect.bottomLeft.x, rect.bottomLeft.y, rect.topRight.x, rect.topRight.y, rect.width, rect.height);
+	printf("(%f, %f), (%f, %f), %f, %f\n", rect2.bottomLeft.x, rect2.bottomLeft.y, rect2.topRight.x, rect2.topRight.y, rect2.width, rect2.height);
+
+	Enemy *enemy = new Enemy(
+			enemyTile,
+			0,
+			&(ppu.sprites[3]),
+			30.0f,
+			120.0f
+			);
+	entities.push_back(enemy);
+	tickers.push_back(enemy);
+	colliders.push_back(enemy);
 }
 
 PlayMode::~PlayMode() {
@@ -129,7 +147,7 @@ void PlayMode::update(float elapsed) {
 	}
 
 	for(auto it = colliders.begin(); it < colliders.end(); it++){
-		((ITickable*)*it)->Tick(elapsed);
+		((ICollidable*)*it)->CheckCollision(ball);
 	}
 	//reset button press counters:
 	up1.downs = 0;
