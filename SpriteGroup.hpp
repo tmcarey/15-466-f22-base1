@@ -18,6 +18,8 @@ struct SpriteGroup{
 
 	void DrawAt(glm::vec2 position);
 	void SetOffset(uint8_t offset);
+	void Hide();
+	void ResetPallette();
 
 	static intPair IntPair(int i, int j) {
 		return intPair(uint8_t(i), uint8_t(j));

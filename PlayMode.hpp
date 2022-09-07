@@ -14,6 +14,7 @@
 #include "ICollidable.hpp"
 
 #include "Projectile.hpp"
+#include "EnemyPlane.hpp"
 
 #include "Entity.hpp"
 
@@ -51,5 +52,6 @@ struct PlayMode : Mode {
 	std::vector<ICollidable*> colliders;
 	size_t nextProjectileIdx = 0;
 	std::array<Projectile*, 4> projectiles;
+	std::array<EnemyPlane*, 2> enemyPlanes;
 	Ball *ball;
 };

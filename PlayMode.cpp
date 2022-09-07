@@ -53,6 +53,10 @@ PlayMode::PlayMode() {
 		projectiles[i] = new Projectile();
 	}
 
+	for(int i = 0; i < enemyPlanes.size(); i++){
+		enemyPlanes[i] = new EnemyPlane();
+	}
+
 	/* Enemy *enemy = new Enemy( */
 	/* 		enemyTile, */
 	/* 		0, */
@@ -144,7 +148,7 @@ void PlayMode::update(float elapsed) {
 
 	for(auto it = colliders.begin(); it < colliders.end(); it++){
 		for(auto it2 = colliders.begin(); it2 < colliders.end(); it2++){
-			if(it != it2){
+			if((*it)->layer != (*it2)->layer){
 				(*it)->CheckCollision(*it2);
 			}
 		}

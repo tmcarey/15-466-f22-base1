@@ -17,6 +17,10 @@ Projectile::Projectile(
 	isExplosionOver = true;
 }
 
+Rect Projectile::GetRect(){
+	return Rect(position, position + glm::vec2(8,8));
+}
+
 void Projectile::FireAt(glm::vec2 _position, glm::vec2 _direction, float _speed, ICollidable::LAYER _layer){
 	isExplosionOver = false;
 	timeSinceFire = 0.0f;
