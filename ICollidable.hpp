@@ -9,7 +9,14 @@ struct ICollidable {
 		Collision(ICollidable *collider) : collider(collider) {};
 		ICollidable *collider;
 		static bool RectRectCollide(Rect a, Rect b);
+
 	};
+
+	enum LAYER {
+		PLAYER,
+		ENEMY
+	};
+	LAYER layer;
 
 	ICollidable();
 

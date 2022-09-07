@@ -10,6 +10,7 @@ struct Plane : ICollidable, ITickable, Entity {
 	Plane(
 			uint8_t shadowPallette,
 			float speed,
+			bool *isSpace,
 			bool *isDown,
 			bool *isUp,
 			bool *isLeft,
@@ -26,9 +27,15 @@ struct Plane : ICollidable, ITickable, Entity {
 		glm::vec2 position;
 
 		void UpdatePosition();
+		bool lastSpace;
+		bool *isSpace;
 		bool *isDown;
 		bool *isUp;
 		bool *isLeft;
 		bool *isRight;
 		float speed;
+
+
+		static float FIRE_TIME;
+		float timeSinceFire;
 };

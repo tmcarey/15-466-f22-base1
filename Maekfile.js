@@ -118,6 +118,7 @@ const game_objs = [
 	maek.CPP('SpriteGroup.cpp'),
 	maek.CPP('ITickable.cpp'),
 	maek.CPP('Entity.cpp'),
+	maek.CPP('Projectile.cpp'),
 	maek.CPP('Collision.cpp')
 ];
 

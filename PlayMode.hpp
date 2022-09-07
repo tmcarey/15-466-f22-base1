@@ -13,6 +13,8 @@
 #include "ITickable.hpp"
 #include "ICollidable.hpp"
 
+#include "Projectile.hpp"
+
 #include "Entity.hpp"
 
 struct PlayMode : Mode {
@@ -34,7 +36,7 @@ struct PlayMode : Mode {
 	struct Button {
 		uint8_t downs = 0;
 		bool pressed = false;
-	} up, down, left, right;
+	} up, down, left, right, space;
 
 	float yScroll = 0.0f;
 
@@ -42,8 +44,12 @@ struct PlayMode : Mode {
 
 	PPU466 ppu;
 
+	void FireBullet(glm::vec2 position, glm::vec2 direction, float speed, ICollidable::LAYER layer);
+
 	std::vector<ITickable*> tickers;
 	std::vector<Entity*> entities;
 	std::vector<ICollidable*> colliders;
+	size_t nextProjectileIdx = 0;
+	std::array<Projectile*, 4> projectiles;
 	Ball *ball;
 };

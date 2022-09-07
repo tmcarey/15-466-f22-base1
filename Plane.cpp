@@ -4,13 +4,16 @@
 
 #include "ITickable.hpp"
 
+float Plane::FIRE_TIME = 2.0f;
+
 Plane::Plane(
 		uint8_t shadowPallette,
 		float speed,
+		bool *isSpace,
 		bool *isDown,
 		bool *isUp,
 		bool *isLeft,
-	bool *isRight) : ITickable(), ICollidable(), Entity(), isDown(isDown), isUp(isUp), isLeft(isLeft), isRight(isRight), speed(speed) {
+	bool *isRight) : ITickable(), ICollidable(), Entity(), isDown(isDown), isUp(isUp), isLeft(isLeft), isRight(isRight), speed(speed), isSpace(isSpace) {
 	std::vector<std::pair<uint8_t, uint8_t>> tiles;
 	tiles.push_back(std::pair<uint8_t, uint8_t>((uint8_t)2, (uint8_t)15));
 	tiles.push_back(std::pair<uint8_t, uint8_t>((uint8_t)2, (uint8_t)14));
@@ -24,6 +27,7 @@ Plane::Plane(
 	shadowSpriteGroup = SpriteGroup(tiles, anchorPoint);
 	shadowSpriteGroup.OverridePallette(shadowPallette);
 	spriteGroup = SpriteGroup(tiles,anchorPoint);
+	timeSinceFire = FIRE_TIME;
 
 	
 	position = glm::vec2(100,100);
@@ -50,8 +54,17 @@ void Plane::Tick(float elapsed) {
 		spriteGroup.SetOffset(0);
 		shadowSpriteGroup.SetOffset(0);
 	}
+	if(*isSpace && !lastSpace && timeSinceFire >= FIRE_TIME){
+		PlayMode::Instance->FireBullet(position + glm::vec2(16, 0), glm::vec2(0, 1), 120.0f, ICollidable::LAYER::PLAYER);
+		PlayMode::Instance->FireBullet(position - glm::vec2(16, 0), glm::vec2(0, 1), 120.0f, ICollidable::LAYER::PLAYER);
+		timeSinceFire = 0.0f;
+	}
+	if(timeSinceFire < FIRE_TIME){
+		timeSinceFire += elapsed;
+	}
 	spriteGroup.DrawAt(position);
 	shadowSpriteGroup.DrawAt(position + glm::vec2(13, -13));
+	lastSpace = *isSpace;
 }
 
 void Plane::OnCollisionEnter(Collision coll){

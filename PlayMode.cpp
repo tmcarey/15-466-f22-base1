@@ -49,6 +49,10 @@ PlayMode::PlayMode() {
 	}
 	yScroll = 0;
 
+	for(int i = 0; i < projectiles.size(); i++){
+		projectiles[i] = new Projectile();
+	}
+
 	/* Enemy *enemy = new Enemy( */
 	/* 		enemyTile, */
 	/* 		0, */
@@ -60,6 +64,7 @@ PlayMode::PlayMode() {
 	new Plane(
 			shadowPallette,
 			30.0f,
+			&space.pressed,
 			&down.pressed,
 			&up.pressed,
 			&left.pressed,
@@ -94,6 +99,10 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			right.downs += 1;
 			right.pressed = true;
 			return true;
+		} else if (evt.key.keysym.sym == SDLK_SPACE) {
+			space.downs += 1;
+			space.pressed = true;
+			return true;
 		}
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_w) {
@@ -107,6 +116,9 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_d) {
 			right.pressed = false;
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_SPACE) {
+			space.pressed = false;
 			return true;
 		}
 	}
@@ -184,4 +196,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	//--- actually draw ---
 	ppu.draw(drawable_size);
+}
+
+void PlayMode::FireBullet(glm::vec2 position, glm::vec2 direction, float speed, ICollidable::LAYER layer){
+	projectiles[nextProjectileIdx]->FireAt(position, direction, speed, layer);
+	nextProjectileIdx ++;
+	if(nextProjectileIdx >= projectiles.size()){
+		nextProjectileIdx = 0;
+	}
 }
