@@ -15,70 +15,56 @@
 
 #include "Util.hpp"
 
+#include "Plane.hpp"
+
 #include "Enemy.hpp"
 
+PlayMode *PlayMode::Instance;
+
 PlayMode::PlayMode() {
+
+	Instance = this;
 	Util::InitRandom();
 	assetManager = new AssetManager(&ppu);
-	uint8_t paddle1Tile = assetManager->loadTile("paddle1.png");
-	uint8_t enemyTile = assetManager->loadTile("paddle1.png");
-	uint8_t paddle2Tile = assetManager->loadTile("paddle2.png");
-	uint8_t ballTile = assetManager->loadTile("ball.png");
+	assetManager->backgroundTiles = {
+		std::pair<uint8_t, uint8_t>(uint8_t(0), uint8_t(0)), 
+		std::pair<uint8_t, uint8_t>(uint8_t(1), uint8_t(0)), 
+		std::pair<uint8_t, uint8_t>(uint8_t(2), uint8_t(0)), 
+		std::pair<uint8_t, uint8_t>(uint8_t(3), uint8_t(0)), 
+		std::pair<uint8_t, uint8_t>(uint8_t(4), uint8_t(0)), 
+	};
+	uint8_t shadowPallette = assetManager->addPallette({
+				glm::vec4(0,0,0,0),
+				glm::vec4(0,0,0,255),
+				glm::vec4(0,0,0,255),
+				glm::vec4(0,0,0,255)
+			});
+	assetManager->loadTileMap("tilemap.png");
+
 	tickers = std::vector<ITickable*>();
 	entities = std::vector<Entity*>();
 	colliders = std::vector<ICollidable*>();
+	for(int i = 0; i < ppu.BackgroundHeight;i++){
+		assetManager->fillNextBackgroundLine();
+	}
+	yScroll = 0;
 
-	Paddle *paddle1 = new Paddle(
-		&up1.pressed,
-		&down1.pressed,
-		20,
-		20,
-		90.0f,
-		1,
-		&(ppu.sprites[0]),
-		paddle1Tile,
-		paddle1Tile);
-	tickers.push_back(paddle1);
-	entities.push_back(paddle1);
-	colliders.push_back(paddle1);
-
-	Paddle *paddle2 =new Paddle(
-		&up2.pressed,
-		&down2.pressed,
-		ppu.ScreenWidth - 8 - 20,
-		20,
-		90.0f,
-		2,
-		&(ppu.sprites[1]),
-		paddle2Tile,
-		paddle2Tile);
-	tickers.push_back(paddle2);
-	entities.push_back(paddle2);
-	colliders.push_back(paddle2);
-
-	ball = new Ball(
-		ballTile,
-		3,
-		90.0f,
-		&(ppu.sprites[2])
-		);
-	entities.push_back(ball);
-	tickers.push_back(ball);
-	Rect rect = paddle1->GetRect();
-	Rect rect2 = ball->GetRect();
-	printf("(%f, %f), (%f, %f), %f, %f\n", rect.bottomLeft.x, rect.bottomLeft.y, rect.topRight.x, rect.topRight.y, rect.width, rect.height);
-	printf("(%f, %f), (%f, %f), %f, %f\n", rect2.bottomLeft.x, rect2.bottomLeft.y, rect2.topRight.x, rect2.topRight.y, rect2.width, rect2.height);
-
-	Enemy *enemy = new Enemy(
-			enemyTile,
-			0,
-			&(ppu.sprites[3]),
+	/* Enemy *enemy = new Enemy( */
+	/* 		enemyTile, */
+	/* 		0, */
+	/* 		&(ppu.sprites[3]), */
+	/* 		30.0f, */
+	/* 		120.0f */
+	/* 		); */
+	
+	new Plane(
+			shadowPallette,
 			30.0f,
-			120.0f
+			&down.pressed,
+			&up.pressed,
+			&left.pressed,
+			&right.pressed
 			);
-	entities.push_back(enemy);
-	tickers.push_back(enemy);
-	colliders.push_back(enemy);
 }
 
 PlayMode::~PlayMode() {
@@ -93,34 +79,34 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 	if (evt.type == SDL_KEYDOWN) {
 		if (evt.key.keysym.sym == SDLK_w) {
-			up1.downs += 1;
-			up1.pressed = true;
+			up.downs += 1;
+			up.pressed = true;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_s) {
-			down1.downs += 1;
-			down1.pressed = true;
+			down.downs += 1;
+			down.pressed = true;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_UP) {
-			up2.downs += 1;
-			up2.pressed = true;
+		} else if (evt.key.keysym.sym == SDLK_a) {
+			left.downs += 1;
+			left.pressed = true;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_DOWN) {
-			down2.downs += 1;
-			down2.pressed = true;
+		} else if (evt.key.keysym.sym == SDLK_d) {
+			right.downs += 1;
+			right.pressed = true;
 			return true;
 		}
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_w) {
-			up1.pressed = false;
+			up.pressed = false;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_s) {
-			down1.pressed = false;
+			down.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_UP) {
-			up2.pressed = false;
+		} else if (evt.key.keysym.sym == SDLK_a) {
+			left.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_DOWN) {
-			down2.pressed = false;
+		} else if (evt.key.keysym.sym == SDLK_d) {
+			right.pressed = false;
 			return true;
 		}
 	}
@@ -133,8 +119,6 @@ void PlayMode::update(float elapsed) {
 
 	//slowly rotates through [0,1):
 	// (will be used to set background color)
-	background_fade += elapsed / 10.0f;
-	background_fade -= std::floor(background_fade);
 
 	/* constexpr float PlayerSpeed = 30.0f; */
 	/* if (up1.pressed) player_at.x -= PlayerSpeed * elapsed; */
@@ -147,26 +131,29 @@ void PlayMode::update(float elapsed) {
 	}
 
 	for(auto it = colliders.begin(); it < colliders.end(); it++){
-		((ICollidable*)*it)->CheckCollision(ball);
+		for(auto it2 = colliders.begin(); it2 < colliders.end(); it2++){
+			if(it != it2){
+				(*it)->CheckCollision(*it2);
+			}
+		}
 	}
+
+	yScroll -= elapsed * 30.0f;
+
+	ppu.background_position.y = int32_t(yScroll);
+
 	//reset button press counters:
-	up1.downs = 0;
-	up2.downs = 0;
-	down1.downs = 0;
-	down2.downs = 0;
+	up.downs = 0;
+	down.downs = 0;
+	left.downs = 0;
+	right.downs = 0;
 }
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//--- set ppu state based on game state ---
 
 	//background color will be some hsv-like fade:
-	ppu.background_color = glm::u8vec4(
-		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 0.0f / 3.0f) ) ) ))),
-		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 1.0f / 3.0f) ) ) ))),
-		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 2.0f / 3.0f) ) ) ))),
-		0xff
-	);
-
+	ppu.background_color = glm::u8vec4(0,255,0,255);
 	//tilemap gets recomputed every frame as some weird plasma thing:
 	//NOTE: don't do this in your game! actually make a map or something :-)
 	/* for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) { */
@@ -177,8 +164,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	/* } */
 
 	//background scroll:
-	ppu.background_position.x = int32_t(-0.5f * player_at.x);
-	ppu.background_position.y = int32_t(-0.5f * player_at.y);
+	/* ppu.background_position.x = int32_t(-0.5f * player_at.x); */
 
 	//player sprite:
 	/* ppu.sprites[0].x = int8_t(player_at.x); */

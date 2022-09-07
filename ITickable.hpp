@@ -2,4 +2,6 @@
 
 struct ITickable {
 	virtual void Tick(float elapsed) = 0;
+
+	ITickable();
 };

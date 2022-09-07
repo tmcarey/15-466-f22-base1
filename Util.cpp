@@ -7,6 +7,10 @@ void Util::InitRandom(){
 	srand((unsigned int)(time(NULL)) * 10000);
 }
 
+int Util::RandomUpTo(int N) {
+	return rand() % N;
+}
+
 float Util::SampleUnit() {
 	float val = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	return val;

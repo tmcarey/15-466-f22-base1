@@ -13,9 +13,11 @@ struct Paddle : ITickable, ICollidable, Entity {
 		   uint8_t margin,
 		   float speed,
 		   uint8_t pallette,
-		   PPU466::Sprite *sprite,
-		   uint8_t noSwingTile, 
-		   uint8_t swingTile);
+		   PPU466::Sprite *sprites,
+		   uint8_t topTile,
+		   uint8_t centerTile,
+		   uint8_t bottomTile);
+
 
 	virtual void Tick(float elapsed) override;
 	virtual void OnCollisionEnter(Collision coll) override;
@@ -28,7 +30,7 @@ struct Paddle : ITickable, ICollidable, Entity {
 		uint8_t column;
 		uint8_t margin;
 		float speed;
-		PPU466::Sprite *sprite;
+		PPU466::Sprite *sprites;
 		uint8_t noSwingTile;
 		uint8_t swingTile;
 		glm::vec2 position;

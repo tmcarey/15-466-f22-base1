@@ -16,6 +16,8 @@
 #include "Entity.hpp"
 
 struct PlayMode : Mode {
+	static PlayMode *Instance;
+
 	PlayMode();
 	virtual ~PlayMode();
 
@@ -32,13 +34,9 @@ struct PlayMode : Mode {
 	struct Button {
 		uint8_t downs = 0;
 		bool pressed = false;
-	} up1, up2, down1, down2;
+	} up, down, left, right;
 
-	//some weird background animation:
-	float background_fade = 0.0f;
-
-	//player position:
-	glm::vec2 player_at = glm::vec2(0.0f);
+	float yScroll = 0.0f;
 
 	//----- drawing handled by PPU466 -----
 

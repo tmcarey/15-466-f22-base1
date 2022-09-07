@@ -11,11 +11,12 @@ Paddle::Paddle(bool *isup,
 		   float speed,
 		   uint8_t pallette,
 		   PPU466::Sprite *sprite,
-		   uint8_t noSwingTile, 
-		   uint8_t swingTile) {
+		   uint8_t topTile, 
+		   uint8_t centerTile, 
+		   uint8_t bottomTile) {
 	this->isup = isup;
 	this->isdown = isdown;
-	this->sprite = sprite;
+	this->sprites = sprite;
 	this->noSwingTile = noSwingTile;
 	this->swingTile = swingTile;
 	this->column = column;
@@ -73,6 +74,6 @@ void Paddle::Tick(float elapsed){
 		position.y = std::min(position.y + (speed * elapsed), PPU466::ScreenHeight - 8 - (float)margin);
 	}
 
-	sprite->x = uint8_t(position.x);
-	sprite->y = uint8_t(position.y);
+	sprites->x = uint8_t(position.x);
+	sprites->y = uint8_t(position.y);
 }

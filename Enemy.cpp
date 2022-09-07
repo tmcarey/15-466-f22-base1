@@ -8,7 +8,7 @@ Enemy::Enemy(uint8_t tile,
 		uint8_t pallette,
 	   PPU466::Sprite *sprite,
 	   float speed,
-	   float startColumn) : speed(speed), sprite(sprite) {
+	   float startColumn) : speed(speed), sprite(sprite), ITickable() {
 	sprite->attributes = pallette;
 	sprite->index = tile;
 	position = glm::vec2((float)startColumn, (float)PPU466::ScreenHeight);
