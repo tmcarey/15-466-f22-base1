@@ -17,9 +17,11 @@
 
 #include "Plane.hpp"
 
-#include "Enemy.hpp"
-
 PlayMode *PlayMode::Instance;
+
+void PlayMode::DoExplosion(glm::vec2 position){
+	explosion->ExplodeAt(position);
+}
 
 PlayMode::PlayMode() {
 
@@ -39,6 +41,12 @@ PlayMode::PlayMode() {
 				glm::vec4(0,0,0,255),
 				glm::vec4(0,0,0,255)
 			});
+	uint8_t redPallette = assetManager->addPallette({
+				glm::vec4(0,0,0,0),
+				glm::vec4(255,0,0,255),
+				glm::vec4(255,0,0,255),
+				glm::vec4(255,0,0,255)
+			});
 	assetManager->loadTileMap("tilemap.png");
 
 	tickers = std::vector<ITickable*>();
@@ -54,18 +62,13 @@ PlayMode::PlayMode() {
 	}
 
 	for(int i = 0; i < enemyPlanes.size(); i++){
-		enemyPlanes[i] = new EnemyPlane();
+		enemyPlanes[i] = new EnemyPlane(redPallette);
 	}
 
-	/* Enemy *enemy = new Enemy( */
-	/* 		enemyTile, */
-	/* 		0, */
-	/* 		&(ppu.sprites[3]), */
-	/* 		30.0f, */
-	/* 		120.0f */
-	/* 		); */
-	
+	explosion = new Explosion();
+
 	new Plane(
+			redPallette,
 			shadowPallette,
 			30.0f,
 			&space.pressed,

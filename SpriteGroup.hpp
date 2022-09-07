@@ -27,7 +27,7 @@ struct SpriteGroup{
 
 	private:
 		std::vector<std::pair<uint8_t, uint8_t>> tileCoords;
-		std::vector<std::pair<PPU466::Sprite *, uint8_t>> sprites;
+		std::vector<std::pair<PPU466::Sprite *, intPair>> sprites;
 		std::pair<uint8_t, uint8_t> anchorPoint;
 		uint8_t offset;
 };

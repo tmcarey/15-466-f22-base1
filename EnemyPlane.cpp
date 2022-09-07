@@ -1,6 +1,8 @@
 #include "EnemyPlane.hpp"
 
-EnemyPlane::EnemyPlane(){
+#include "PlayMode.hpp"
+
+EnemyPlane::EnemyPlane(uint8_t redPallette) : redPallette(redPallette) {
 	planeGroup = SpriteGroup({
 				SpriteGroup::IntPair(2, 11),
 				SpriteGroup::IntPair(2, 10),
@@ -27,6 +29,14 @@ void EnemyPlane::Tick(float elapsed){
 	if(!isAlive)
 		return;
 
+	if(isRed){
+		timeSinceHit += elapsed;
+		if(timeSinceHit > 1.0f){
+			planeGroup.ResetPallette();
+			isRed = false;
+		}
+	}
+
 	time += elapsed;
 	velocity = glm::vec2(std::sin(time), 0) * 30.0f;
 
@@ -46,7 +56,14 @@ void EnemyPlane::Tick(float elapsed){
 void EnemyPlane::OnCollisionEnter(Collision coll){
 	printf("something entered\n");
 	if(isAlive && coll.collider->layer == ICollidable::LAYER::PLAYER){
-		planeGroup.Hide();
+		hitPoints--;
+		isRed = true;
+		planeGroup.OverridePallette(redPallette);
+		timeSinceHit = 0.0f;
+	}
+	if(hitPoints <= 0){
 		isAlive = false;
+		PlayMode::Instance->DoExplosion(position);
+		planeGroup.Hide();
 	}
 }

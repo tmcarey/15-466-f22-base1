@@ -7,6 +7,7 @@
 float Plane::FIRE_TIME = 2.0f;
 
 Plane::Plane(
+		uint8_t redPallette,
 		uint8_t shadowPallette,
 		float speed,
 		bool *isSpace,

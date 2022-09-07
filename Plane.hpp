@@ -8,6 +8,7 @@
 
 struct Plane : ICollidable, ITickable, Entity {
 	Plane(
+			uint8_t redPallette,
 			uint8_t shadowPallette,
 			float speed,
 			bool *isSpace,

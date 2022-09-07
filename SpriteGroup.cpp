@@ -15,9 +15,8 @@ SpriteGroup::SpriteGroup(std::vector<std::pair<uint8_t, uint8_t>> tileCoords, st
 		std::pair<uint8_t, uint8_t> tileInfo = PlayMode::Instance->assetManager->tilemap[it->first][it->second];
 		sprite->index = tileInfo.first;
 		sprite->attributes = tileInfo.second;
-		printf("%d, %d\n", it->first, it->second);
 
-		sprites.push_back(std::pair<PPU466::Sprite*, uint8_t>(sprite, tileInfo.first));
+		sprites.push_back(std::pair<PPU466::Sprite*, intPair>(sprite, IntPair(tileInfo.first, tileInfo.second)));
 	}
 }
 
@@ -29,7 +28,7 @@ void SpriteGroup::OverridePallette(uint8_t pallette){
 
 void SpriteGroup::ResetPallette(){
 	for(auto it = sprites.begin(); it < sprites.end(); it++){
-		it->first->attributes = it->second;
+		it->first->attributes = it->second.second;
 	}
 }
 
@@ -44,7 +43,7 @@ void SpriteGroup::SetOffset(uint8_t _offset){
 	if(_offset != this->offset){
 		this->offset = _offset;
 		for(int i = 0; i < sprites.size(); i++){
-			sprites[i].first->index = sprites[i].second + offset;
+			sprites[i].first->index = sprites[i].second.first + offset;
 		}
 	}
 }

@@ -12,6 +12,7 @@
 
 #include "ITickable.hpp"
 #include "ICollidable.hpp"
+#include "Explosion.hpp"
 
 #include "Projectile.hpp"
 #include "EnemyPlane.hpp"
@@ -46,6 +47,7 @@ struct PlayMode : Mode {
 	PPU466 ppu;
 
 	void FireBullet(glm::vec2 position, glm::vec2 direction, float speed, ICollidable::LAYER layer);
+	void DoExplosion(glm::vec2 position);
 
 	std::vector<ITickable*> tickers;
 	std::vector<Entity*> entities;
@@ -53,5 +55,5 @@ struct PlayMode : Mode {
 	size_t nextProjectileIdx = 0;
 	std::array<Projectile*, 4> projectiles;
 	std::array<EnemyPlane*, 2> enemyPlanes;
-	Ball *ball;
+	Explosion *explosion;
 };
