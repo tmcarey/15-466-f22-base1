@@ -7,6 +7,7 @@
 
 struct Projectile : Entity, ICollidable, ITickable {
 	Projectile();
+	~Projectile(){};
 
 	virtual void FireAt(glm::vec2 position, glm::vec2 direction, float speed, ICollidable::LAYER layer);
 	virtual void OnCollisionEnter(Collision coll) override;
@@ -14,8 +15,8 @@ struct Projectile : Entity, ICollidable, ITickable {
 	virtual Rect GetRect() override;
 
 	private:
-		PPU466::Sprite *bullet;
 		SpriteGroup explosionGroup;
+		SpriteGroup projectileGroup;
 		bool isFiring;
 		glm::vec2 direction;
 		glm::vec2 position;

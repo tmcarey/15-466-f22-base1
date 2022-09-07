@@ -2,36 +2,35 @@
 
 #include "PlayMode.hpp"
 
-EnemyPlane::EnemyPlane(uint8_t redPallette) : redPallette(redPallette) {
-	planeGroup = SpriteGroup({
-				SpriteGroup::IntPair(2, 11),
-				SpriteGroup::IntPair(2, 10),
-				SpriteGroup::IntPair(2, 9),
-				SpriteGroup::IntPair(2, 8),
-				SpriteGroup::IntPair(0, 9),
-				SpriteGroup::IntPair(1, 9),
-				SpriteGroup::IntPair(3, 9),
-				SpriteGroup::IntPair(4, 9),
-			},
-			SpriteGroup::IntPair(2, 11)
-			);
-	layer = ICollidable::ENEMY;
-	position = glm::vec2(100, 200);
+EnemyPlane::EnemyPlane(SpriteGroup group, uint8_t redPallette) : redPallette(redPallette) {
+	planeGroup = group;
 	velocity = glm::vec2(0, 0);
-	isAlive = true;
 }
 
 Rect EnemyPlane::GetRect(){
-	return Rect(position + glm::vec2(-16.0f, -32.0f), position + glm::vec2(24.0f, 8.0f));
+	return Rect(position + glm::vec2(-8.0f, -8.0f), position + glm::vec2(16.0f, 8.0f));
+}
+
+void EnemyPlane::SpawnAt(glm::vec2 _position){
+	layer = ICollidable::ENEMY;
+	position = _position;
+	isAlive = true;
 }
 
 void EnemyPlane::Tick(float elapsed){
 	if(!isAlive)
 		return;
 
+	if(timeSinceShot >= 2.0f){
+		PlayMode::Instance->FireBullet(position + glm::vec2(0, -26), glm::vec2(0, -1), 90.0f, ENEMY);
+		timeSinceShot = 0.0f;
+	}else{
+		timeSinceShot += elapsed;
+	}
+
 	if(isRed){
 		timeSinceHit += elapsed;
-		if(timeSinceHit > 1.0f){
+		if(timeSinceHit > 0.3f){
 			planeGroup.ResetPallette();
 			isRed = false;
 		}
@@ -43,9 +42,9 @@ void EnemyPlane::Tick(float elapsed){
 	position += velocity * elapsed;
 
 	if(velocity.x > 0){
-		planeGroup.SetOffset(5);
+		planeGroup.SetOffset(3);
 	}else if(velocity.x < 0){
-		planeGroup.SetOffset(10);
+		planeGroup.SetOffset(6);
 	}else if(velocity.x == 0){
 		planeGroup.SetOffset(0);
 	}
@@ -54,7 +53,9 @@ void EnemyPlane::Tick(float elapsed){
 }
 
 void EnemyPlane::OnCollisionEnter(Collision coll){
-	printf("something entered\n");
+	if(!isAlive)
+		return;
+
 	if(isAlive && coll.collider->layer == ICollidable::LAYER::PLAYER){
 		hitPoints--;
 		isRed = true;
@@ -63,7 +64,8 @@ void EnemyPlane::OnCollisionEnter(Collision coll){
 	}
 	if(hitPoints <= 0){
 		isAlive = false;
-		PlayMode::Instance->DoExplosion(position);
+		PlayMode::Instance->DoExplosion(position + glm::vec2(0, -20));
 		planeGroup.Hide();
+		layer = ICollidable::DISABLED;
 	}
 }

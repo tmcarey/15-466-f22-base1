@@ -15,8 +15,6 @@
 
 #include "Util.hpp"
 
-#include "Plane.hpp"
-
 PlayMode *PlayMode::Instance;
 
 void PlayMode::DoExplosion(glm::vec2 position){
@@ -43,9 +41,9 @@ PlayMode::PlayMode() {
 			});
 	uint8_t redPallette = assetManager->addPallette({
 				glm::vec4(0,0,0,0),
-				glm::vec4(255,0,0,255),
-				glm::vec4(255,0,0,255),
-				glm::vec4(255,0,0,255)
+				glm::vec4(200,0,0,255),
+				glm::vec4(200,0,0,255),
+				glm::vec4(200,0,0,255)
 			});
 	assetManager->loadTileMap("tilemap.png");
 
@@ -57,17 +55,40 @@ PlayMode::PlayMode() {
 	}
 	yScroll = 0;
 
+	SpriteGroup planeGroup1 = SpriteGroup({
+				SpriteGroup::IntPair(1, 11),
+				SpriteGroup::IntPair(1, 10),
+				SpriteGroup::IntPair(1, 8),
+				SpriteGroup::IntPair(0, 9),
+				SpriteGroup::IntPair(1, 9),
+				SpriteGroup::IntPair(2, 9),
+			},
+			SpriteGroup::IntPair(1, 10)
+			);
+	enemyPlanes[0] = new EnemyPlane(planeGroup1, redPallette);
+	SpriteGroup planeGroup2 = SpriteGroup({
+				SpriteGroup::IntPair(8, 8),
+				SpriteGroup::IntPair(8, 7),
+				SpriteGroup::IntPair(8, 6),
+				SpriteGroup::IntPair(7, 6),
+				SpriteGroup::IntPair(8, 5),
+				SpriteGroup::IntPair(9, 6),
+			},
+			SpriteGroup::IntPair(8, 8)
+			);
+	enemyPlanes[1] = new EnemyPlane(planeGroup2, redPallette);
+
+
 	for(int i = 0; i < projectiles.size(); i++){
 		projectiles[i] = new Projectile();
 	}
-
-	for(int i = 0; i < enemyPlanes.size(); i++){
-		enemyPlanes[i] = new EnemyPlane(redPallette);
-	}
-
 	explosion = new Explosion();
+	timer = new Timer(glm::vec2(PPU466::ScreenWidth / 2 - 10, 230));
 
-	new Plane(
+	enemyPlanes[0]->SpawnAt(glm::vec2(120,220));
+	enemyPlanes[1]->SpawnAt(glm::vec2(60,220));
+
+	plane = new Plane(
 			redPallette,
 			shadowPallette,
 			30.0f,
@@ -77,14 +98,21 @@ PlayMode::PlayMode() {
 			&left.pressed,
 			&right.pressed
 			);
+	printf("Using %d Sprites.\n", assetManager->spriteCount);
 }
 
 PlayMode::~PlayMode() {
-	for(auto it = entities.begin(); it < entities.end(); it++){
-		delete *it;
-	}
-	entities.clear();
 	delete assetManager;
+	for(int i = 0; i < projectiles.size(); i++){
+		delete projectiles[i];
+	}
+
+	for(int i = 0; i < enemyPlanes.size(); i++){
+		delete enemyPlanes[i];
+	}
+	delete explosion;
+	delete plane;
+
 }
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
@@ -172,7 +200,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//--- set ppu state based on game state ---
 
 	//background color will be some hsv-like fade:
-	ppu.background_color = glm::u8vec4(0,255,0,255);
+	ppu.background_color = glm::u8vec4(96,153,51,255);
 	//tilemap gets recomputed every frame as some weird plasma thing:
 	//NOTE: don't do this in your game! actually make a map or something :-)
 	/* for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) { */

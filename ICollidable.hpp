@@ -14,7 +14,8 @@ struct ICollidable {
 
 	enum LAYER {
 		PLAYER,
-		ENEMY
+		ENEMY,
+		DISABLED
 	};
 	LAYER layer;
 

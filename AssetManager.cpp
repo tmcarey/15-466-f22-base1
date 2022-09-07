@@ -135,8 +135,10 @@ void AssetManager::loadTileMap(std::string path){
 		}
 	}
 
+	int idx = 0;
+	printf("Pallettes:\n");
 	for(auto it = pallettes.begin(); it < pallettes.end(); it++){
-		printf("pallette:\n");
+		printf("pallette %d:\n", idx++);
 		for(auto it2 = it->begin(); it2 != it->end(); it2++){
 			printf("Color: %d, %d, %d, %d\n", it2->first.x,it2->first.y,it2->first.z,it2->first.w);
 		}

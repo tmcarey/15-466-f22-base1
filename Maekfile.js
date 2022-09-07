@@ -111,6 +111,7 @@ const game_objs = [
 	maek.CPP('gl_compile_program.cpp'),
 	maek.CPP('GL.cpp'),
 	maek.CPP('AssetManager.cpp'),
+	maek.CPP('Timer.cpp'),
 	maek.CPP('Util.cpp'),
 	maek.CPP('ICollidable.cpp'),
 	maek.CPP('Plane.cpp'),

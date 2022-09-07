@@ -19,6 +19,10 @@
 
 #include "Entity.hpp"
 
+#include "Plane.hpp"
+
+#include "Timer.hpp"
+
 struct PlayMode : Mode {
 	static PlayMode *Instance;
 
@@ -56,4 +60,6 @@ struct PlayMode : Mode {
 	std::array<Projectile*, 4> projectiles;
 	std::array<EnemyPlane*, 2> enemyPlanes;
 	Explosion *explosion;
+	Plane *plane;
+	Timer *timer;
 };

@@ -6,13 +6,16 @@ Projectile::Projectile(
 			) {
 
 	explosionGroup = SpriteGroup({
-				SpriteGroup::IntPair(0,0)
+				SpriteGroup::IntPair(0,5)
 			},
-			SpriteGroup::IntPair(0, 0));
+			SpriteGroup::IntPair(0, 5));
+	projectileGroup = SpriteGroup({
+				SpriteGroup::IntPair(13,1)
+			},
+			SpriteGroup::IntPair(13, 1));
 
 	position = glm::vec2(0, PPU466::ScreenHeight);
 	explosionGroup.DrawAt(glm::vec2(0, PPU466::ScreenHeight));
-	bullet = PlayMode::Instance->assetManager->getNextSprite();
 	shouldDie = false;
 	isExplosionOver = true;
 }
@@ -33,10 +36,14 @@ void Projectile::FireAt(glm::vec2 _position, glm::vec2 _direction, float _speed,
 	this->speed = _speed;
 	this->direction = _direction;
 
-	bullet->x = uint8_t(_position.x);
-	bullet->y = uint8_t(_position.y);
 
+	projectileGroup.DrawAt(_position);
 	explosionGroup.DrawAt(_position);
+	if(_direction.y < 0){
+		explosionGroup.SetOffset(1);
+	}else{
+		explosionGroup.SetOffset(0);
+	}
 }
 
 void Projectile::Tick(float elapsed){
@@ -44,7 +51,7 @@ void Projectile::Tick(float elapsed){
 		position += direction * speed * elapsed;
 	}
 
-	if(!isExplosionOver && timeSinceFire > 0.5f){
+	if(!isExplosionOver && timeSinceFire > 0.1f){
 		explosionGroup.DrawAt(glm::vec2(0, PPU466::ScreenHeight));
 		isExplosionOver = true;
 	}else if(!isExplosionOver){
@@ -57,11 +64,11 @@ void Projectile::Tick(float elapsed){
 		position = glm::vec2(0, PPU466::ScreenHeight);
 	}
 
-	bullet->x = uint8_t(position.x);
-	bullet->y = uint8_t(position.y);
-
+	projectileGroup.DrawAt(position);
 }
 
 void Projectile::OnCollisionEnter(Collision coll){
-	shouldDie = true;
+	if(coll.collider->layer != DISABLED){
+		shouldDie = true;
+	}
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ICollidable.hpp"
 
 #include "ITickable.hpp"
@@ -20,6 +22,7 @@ struct Plane : ICollidable, ITickable, Entity {
 	virtual void OnCollisionEnter(Collision coll) override;
 
 	virtual void Tick(float elapsed) override;
+	virtual Rect GetRect() override;
 
 	private:
 		SpriteGroup spriteGroup;
@@ -35,7 +38,11 @@ struct Plane : ICollidable, ITickable, Entity {
 		bool *isLeft;
 		bool *isRight;
 		float speed;
+		int healthPoints;
+		float timeSinceHit;
+		bool isRed;
 
+		bool isAlive =  true;
 
 		static float FIRE_TIME;
 		float timeSinceFire;
