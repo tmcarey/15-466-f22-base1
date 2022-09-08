@@ -43,7 +43,7 @@ void EnemyPlane::Tick(float elapsed){
 	}
 
 	time += elapsed;
-	velocity = glm::vec2(std::sin(time), 0) * 30.0f * speed;
+	velocity = glm::vec2(std::sin(time * speed), 0) * 30.0f;
 
 	position += velocity * elapsed;
 

@@ -1,5 +1,7 @@
 #include "Timer.hpp"
 
+#include "PlayMode.hpp"
+
 Timer::Timer(glm::vec2 _pos) : position(_pos), totalTime(99) {
 	digit1 = SpriteGroup({
 				SpriteGroup::IntPair(6, 2)
@@ -12,9 +14,13 @@ Timer::Timer(glm::vec2 _pos) : position(_pos), totalTime(99) {
 }
 
 void Timer::Tick(float elapsed){
+	if(PlayMode::Instance->gameOver)
+		return;
+
 	totalTime -= elapsed;
 
 	if(totalTime <= 0.0f){
+		PlayMode::Instance->Win();
 		totalTime = 0.0f;
 	}
 

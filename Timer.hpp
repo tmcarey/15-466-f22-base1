@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ITickable.hpp"
 
 #include "SpriteGroup.hpp"

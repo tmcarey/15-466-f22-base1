@@ -84,6 +84,9 @@ void Plane::Tick(float elapsed) {
 }
 
 void Plane::OnCollisionEnter(Collision coll){
+	if(PlayMode::Instance->gameOver)
+		return;
+
 	if(coll.collider->layer == ENEMY){
 		healthPoints--;
 		timeSinceHit = 0.0f;
@@ -92,8 +95,10 @@ void Plane::OnCollisionEnter(Collision coll){
 	}
 
 	if(healthPoints <= 0){
-
 		spriteGroup.Hide();
+		shadowSpriteGroup.Hide();
 		isAlive = false;
+		PlayMode::Instance->DoExplosion(position);
+		PlayMode::Instance->Lose();
 	}
 }

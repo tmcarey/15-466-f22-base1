@@ -102,6 +102,32 @@ PlayMode::PlayMode() {
 			&left.pressed,
 			&right.pressed
 			);
+	loseBoard = SpriteGroup({
+				SpriteGroup::IntPair(9, 9),
+				SpriteGroup::IntPair(10, 9),
+				SpriteGroup::IntPair(11, 9),
+				SpriteGroup::IntPair(12, 9),
+				SpriteGroup::IntPair(9, 10),
+				SpriteGroup::IntPair(10, 10),
+				SpriteGroup::IntPair(11, 10),
+				SpriteGroup::IntPair(12, 10)
+			},
+			SpriteGroup::IntPair(9, 9)
+			);
+
+	winBoard = SpriteGroup({
+				SpriteGroup::IntPair(0, 7),
+				SpriteGroup::IntPair(1, 7),
+				SpriteGroup::IntPair(2, 7),
+				SpriteGroup::IntPair(3, 7),
+				SpriteGroup::IntPair(0, 6),
+				SpriteGroup::IntPair(1, 6),
+				SpriteGroup::IntPair(2, 6),
+				SpriteGroup::IntPair(3, 6)
+			},
+			SpriteGroup::IntPair(0, 7)
+			);
+
 	printf("Using %d Sprites.\n", assetManager->spriteCount);
 }
 
@@ -117,6 +143,15 @@ PlayMode::~PlayMode() {
 	delete explosion;
 	delete plane;
 
+}
+
+void PlayMode::Win(){
+	gameOver = true;
+	winBoard.DrawAt(glm::vec2(((float)PPU466::ScreenWidth / 2) - 16.0f,PPU466::ScreenHeight / 2));
+}
+void PlayMode::Lose(){
+	gameOver = true;
+	loseBoard.DrawAt(glm::vec2(((float)PPU466::ScreenWidth / 2) - 16.0f,PPU466::ScreenHeight / 2));
 }
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
@@ -168,15 +203,6 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 void PlayMode::update(float elapsed) {
 	auto color = ppu.palette_table[1][0];
 
-	//slowly rotates through [0,1):
-	// (will be used to set background color)
-
-	/* constexpr float PlayerSpeed = 30.0f; */
-	/* if (up1.pressed) player_at.x -= PlayerSpeed * elapsed; */
-	/* if (up2.pressed) player_at.x += PlayerSpeed * elapsed; */
-	/* if (down1.pressed) player_at.y -= PlayerSpeed * elapsed; */
-	/* if (down2.pressed) player_at.y += PlayerSpeed * elapsed; */
-	printf("%d\n", planesCurrentlyAlive);
 	if(planesCurrentlyAlive <= 0){
 		planesCurrentlyAlive = 0;
 		waveNum++;
@@ -188,7 +214,7 @@ void PlayMode::update(float elapsed) {
 				);
 		if(waveNum > 2){
 			enemyPlanes[1]->SpawnAt(
-					glm::vec2(200, 200),
+					glm::vec2(140, 160),
 					3 + (waveNum / 2),
 					1.0f + (0.2f * waveNum),
 					1.0f + (0.2f * waveNum)
@@ -224,33 +250,6 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	//background color will be some hsv-like fade:
 	ppu.background_color = glm::u8vec4(96,153,51,255);
-	//tilemap gets recomputed every frame as some weird plasma thing:
-	//NOTE: don't do this in your game! actually make a map or something :-)
-	/* for (uint32_t y = 0; y < PPU466::BackgroundHeight; ++y) { */
-	/* 	for (uint32_t x = 0; x < PPU466::BackgroundWidth; ++x) { */
-	/* 		//TODO: make weird plasma thing */
-	/* 		ppu.background[x+PPU466::BackgroundWidth*y] = ((x+y)%16); */
-	/* 	} */
-	/* } */
-
-	//background scroll:
-	/* ppu.background_position.x = int32_t(-0.5f * player_at.x); */
-
-	//player sprite:
-	/* ppu.sprites[0].x = int8_t(player_at.x); */
-	/* ppu.sprites[0].y = int8_t(player_at.y); */
-	/* ppu.sprites[0].index = 0; */
-	/* ppu.sprites[0].attributes = 0; */
-
-	//some other misc sprites:
-	/* for (uint32_t i = 1; i < 63; ++i) { */
-	/* 	float amt = (i + 2.0f * background_fade) / 62.0f; */
-	/* 	ppu.sprites[i].x = int8_t(0.5f * PPU466::ScreenWidth + std::cos( 2.0f * M_PI * amt * 5.0f + 0.01f * player_at.x) * 0.4f * PPU466::ScreenWidth); */
-	/* 	ppu.sprites[i].y = int8_t(0.5f * PPU466::ScreenHeight + std::sin( 2.0f * M_PI * amt * 3.0f + 0.01f * player_at.y) * 0.4f * PPU466::ScreenWidth); */
-	/* 	ppu.sprites[i].index = 32; */
-	/* 	ppu.sprites[i].attributes = 6; */
-	/* 	if (i % 2) ppu.sprites[i].attributes |= 0x80; //'behind' bit */
-	/* } */
 
 	//--- actually draw ---
 	ppu.draw(drawable_size);

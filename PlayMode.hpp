@@ -52,16 +52,21 @@ struct PlayMode : Mode {
 
 	void FireBullet(glm::vec2 position, glm::vec2 direction, float speed, ICollidable::LAYER layer);
 	void DoExplosion(glm::vec2 position);
+	void Lose();
+	void Win();
 
 	std::vector<ITickable*> tickers;
 	std::vector<Entity*> entities;
 	std::vector<ICollidable*> colliders;
 	size_t nextProjectileIdx = 0;
-	std::array<Projectile*, 8> projectiles;
+	std::array<Projectile*, 7> projectiles;
 	std::array<EnemyPlane*, 2> enemyPlanes;
 	int planesCurrentlyAlive = 0;
 	int waveNum = 1;
 	Explosion *explosion;
 	Plane *plane;
 	Timer *timer;
+	SpriteGroup winBoard;
+	SpriteGroup loseBoard;
+	bool gameOver = false;
 };
