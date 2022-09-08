@@ -10,16 +10,16 @@ Screen Shot:
 
 How Your Asset Pipeline Works:
 
-(TODO: describe the steps in your asset pipeline, from source files to tiles/backgrounds/whatever you upload to the PPU466.)
+All assets are pulled from one large spritesheet. Pallettes are derived directly from that spritesheet - the system automatically finds pallettes which are subsets of one another and combines them to minimize total pallette count. 
 
-(TODO: make sure the source files you drew are included. You can [link](your/file.png) to them to be a bit fancier.)
+I can also use the SpriteGroup class I made to group sets of sprites together with a given anchor point. I add an offset to the tile index of the SpriteGroup to add an offset to the tile indexes of each sprite in the group. Since the tiles are added in the same order as they appear in the spritesheet, with the offsets I can easily make and switch between animation states. 
 
 How To Play:
 
 Menu:
-WASD to change menu selection, SPACE to select.
 
 WASD to fly in a particular direction, SPACE to shoot.
+Survive the timer to win.
 
 This game was built with [NEST](NEST.md).
 
