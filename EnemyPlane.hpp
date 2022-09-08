@@ -11,9 +11,11 @@ struct EnemyPlane : ICollidable, ITickable, Entity {
 	virtual void Tick(float elapsed) override;
 	virtual void OnCollisionEnter(Collision coll) override;
 	virtual Rect GetRect() override;
-	void SpawnAt(glm::vec2 position);
+	void SpawnAt(glm::vec2 position, int hitPoints, float speed, float fireRate);
 	
 	private:
+		float speed;
+		float fireRate;
 		uint8_t redPallette;
 		SpriteGroup planeGroup;
 		glm::vec2 position;

@@ -85,8 +85,12 @@ PlayMode::PlayMode() {
 	explosion = new Explosion();
 	timer = new Timer(glm::vec2(PPU466::ScreenWidth / 2 - 10, 230));
 
-	enemyPlanes[0]->SpawnAt(glm::vec2(120,220));
-	enemyPlanes[1]->SpawnAt(glm::vec2(60,220));
+	enemyPlanes[0]->SpawnAt(glm::vec2(120,220),
+			3,
+			1.0,
+			1.0
+			);
+//	enemyPlanes[1]->SpawnAt(glm::vec2(60,220));
 
 	plane = new Plane(
 			redPallette,
@@ -172,6 +176,25 @@ void PlayMode::update(float elapsed) {
 	/* if (up2.pressed) player_at.x += PlayerSpeed * elapsed; */
 	/* if (down1.pressed) player_at.y -= PlayerSpeed * elapsed; */
 	/* if (down2.pressed) player_at.y += PlayerSpeed * elapsed; */
+	printf("%d\n", planesCurrentlyAlive);
+	if(planesCurrentlyAlive <= 0){
+		planesCurrentlyAlive = 0;
+		waveNum++;
+		enemyPlanes[0]->SpawnAt(
+				glm::vec2(100, 200),
+				3 + (waveNum / 2),
+				1.0f + (0.1f * waveNum),
+				1.0f + (0.1f * waveNum)
+				);
+		if(waveNum > 2){
+			enemyPlanes[1]->SpawnAt(
+					glm::vec2(200, 200),
+					3 + (waveNum / 2),
+					1.0f + (0.2f * waveNum),
+					1.0f + (0.2f * waveNum)
+					);
+		}
+	}
 
 	for(auto it = tickers.begin(); it < tickers.end(); it++){
 		((ITickable*)*it)->Tick(elapsed);

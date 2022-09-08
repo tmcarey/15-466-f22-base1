@@ -11,7 +11,13 @@ Rect EnemyPlane::GetRect(){
 	return Rect(position + glm::vec2(-8.0f, -8.0f), position + glm::vec2(16.0f, 8.0f));
 }
 
-void EnemyPlane::SpawnAt(glm::vec2 _position){
+void EnemyPlane::SpawnAt(glm::vec2 _position, int hitPoints_, float speed_, float fireRate_){
+	if(!isAlive){
+		PlayMode::Instance->planesCurrentlyAlive++;
+	}
+	this->hitPoints = hitPoints_;
+	this->speed = speed_;
+	this->fireRate = fireRate_;
 	layer = ICollidable::ENEMY;
 	position = _position;
 	isAlive = true;
@@ -21,7 +27,7 @@ void EnemyPlane::Tick(float elapsed){
 	if(!isAlive)
 		return;
 
-	if(timeSinceShot >= 2.0f){
+	if(timeSinceShot >= (2.0f / fireRate)){
 		PlayMode::Instance->FireBullet(position + glm::vec2(0, -26), glm::vec2(0, -1), 90.0f, ENEMY);
 		timeSinceShot = 0.0f;
 	}else{
@@ -37,7 +43,7 @@ void EnemyPlane::Tick(float elapsed){
 	}
 
 	time += elapsed;
-	velocity = glm::vec2(std::sin(time), 0) * 30.0f;
+	velocity = glm::vec2(std::sin(time), 0) * 30.0f * speed;
 
 	position += velocity * elapsed;
 
@@ -64,6 +70,9 @@ void EnemyPlane::OnCollisionEnter(Collision coll){
 	}
 	if(hitPoints <= 0){
 		isAlive = false;
+		if(!isAlive){
+			PlayMode::Instance->planesCurrentlyAlive--;
+		}
 		PlayMode::Instance->DoExplosion(position + glm::vec2(0, -20));
 		planeGroup.Hide();
 		layer = ICollidable::DISABLED;

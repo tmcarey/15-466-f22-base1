@@ -57,8 +57,10 @@ struct PlayMode : Mode {
 	std::vector<Entity*> entities;
 	std::vector<ICollidable*> colliders;
 	size_t nextProjectileIdx = 0;
-	std::array<Projectile*, 4> projectiles;
+	std::array<Projectile*, 8> projectiles;
 	std::array<EnemyPlane*, 2> enemyPlanes;
+	int planesCurrentlyAlive = 0;
+	int waveNum = 1;
 	Explosion *explosion;
 	Plane *plane;
 	Timer *timer;

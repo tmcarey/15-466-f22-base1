@@ -68,7 +68,7 @@ void Projectile::Tick(float elapsed){
 }
 
 void Projectile::OnCollisionEnter(Collision coll){
-	if(coll.collider->layer != DISABLED){
+	if(coll.collider->layer != DISABLED && coll.collider->layer != layer){
 		shouldDie = true;
 	}
 }

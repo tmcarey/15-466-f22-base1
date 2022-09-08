@@ -30,6 +30,7 @@ Plane::Plane(
 	spriteGroup = SpriteGroup(tiles,anchorPoint);
 	timeSinceFire = FIRE_TIME;
 	healthPoints = 6;
+	layer = PLAYER;
 
 	
 	position = glm::vec2(100,100);
@@ -91,6 +92,7 @@ void Plane::OnCollisionEnter(Collision coll){
 	}
 
 	if(healthPoints <= 0){
+
 		spriteGroup.Hide();
 		isAlive = false;
 	}
